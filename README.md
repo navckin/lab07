@@ -131,13 +131,6 @@ target_link_libraries(solver solver_lib)
 ```
 **Удачной стажировки!**
 
-## Links
-- [Основы сборки проектов на С/C++ при помощи CMake](https://eax.me/cmake/)
-- [CMake Tutorial](http://neerc.ifmo.ru/wiki/index.php?title=CMake_Tutorial)
-- [C++ Tutorial - make & CMake](https://www.bogotobogo.com/cplusplus/make.php)
-- [Autotools](http://www.gnu.org/software/automake/manual/html_node/Autotools-Introduction.html)
-- [CMake](https://cgold.readthedocs.io/en/latest/index.html)
-
 ```
-Copyright (c) 2015-2020 The ISC Authors
+Copyright (c) 2015-2020 The ISC Authors & navckin
 ```
