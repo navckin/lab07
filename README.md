@@ -89,7 +89,7 @@ cat > CMakeLists.txt <<EOF
 mv formatter_ex_lib/ hello_world_application/
 2. Создаем Симэйк со след. начинкой:
 cat > CMakeLists.txt <<EOF
->cmake_minimum_required(VERSION 2.8)
+>cmake_minimum_required(VERSION 3.4)
 >project(hello_world)
 >include_directories(formatter_ex_lib)
 >add_subdirectory(formatter_ex_lib)
@@ -109,11 +109,11 @@ cat > CMakeLists.txt <<EOF
 ВТОРОЕ:
 1. Необходимо создать Симэйки для солвер_либ и солвер_аппликатион
 2. Создание происходит аналогично пунктами выше, начинка для солвер_либ такая:
-cmake_minimum_required(VERSION 2.8) 
+cmake_minimum_required(VERSION 3.4) 
 add_library(solver_lib STATIC solver.h solver.cpp)
 
 Начинка для солвер_аппликатион такая:
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.4)
 project(solver)
 add_executable(solver equation.cpp)
 include_directories(formatter_ex_lib)
@@ -127,7 +127,7 @@ target_link_libraries(solver solver_lib)
 4. Предварительно переместив при помощи команды mv солвер_либ,форматтер_ех_либ в солвер.аппплекатион
 5. При использовании команды make выяснилось, что в файле solver.cpp
 есть опечатки: исправлем. при помощи текстового редактора дописали нужную биб-ку (cmath) и исправили команду корня (sqrt)
-6. Появился файл solver (и несколько  дргуих по типу файлов из задания 1 пункт 5)
+6. Появился файл solver
 ```
 **Удачной стажировки!**
 
