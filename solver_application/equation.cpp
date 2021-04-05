@@ -2,17 +2,7 @@
 #include <string>
 #include "formatter_ex.h"
 #include "solver.h"
-#include <sstream>
 
-namespace patch
-{
-template < typename T > std::string to_string( const T& n )
-	{
-	std::ostringstream stm ;
-	stm « n ;
-	return stm.str() ;
-	}
-}
 
 int main()
 {
@@ -29,8 +19,8 @@ int main()
     {
         solve(a, b, c, x1, x2);
 
-        formatter(std::cout, "x1 = " + patch::to_string(x1));
-        formatter(std::cout, "x2 = " + patch::to_string(x2));
+        formatter(std::cout, "x1 = " + "0");
+        formatter(std::cout, "x2 = " + "0");
     }
     catch (const std::logic_error& ex)
     {
