@@ -8,6 +8,7 @@ add_library(formatter STATIC formatter_lib/formatter.cpp)
 include_directories(formatter_lib)
 
 add_library(formatter_ex STATIC formatter_ex_lib/formatter_ex.cpp)
+target_link_libraries(formatter_ex formatter)
 include_directories(formatter_ex_lib)
 
 add_executable(hello_world hello_world_application/hello_world.cpp)
