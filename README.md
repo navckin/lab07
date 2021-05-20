@@ -1,24 +1,136 @@
-[![Build Status](https://travis-ci.com/navckin/lab06.svg?branch=main)](https://travis-ci.com/navckin/lab06)
-## Laboratory work III
+## Laboratory work V
 
+Данная лабораторная работа посвещена изучению фреймворков для тестирования на примере **GTest**
 
-Данная лабораторная работа посвещена изучению систем автоматизации сборки проекта на примере **CMake**
-
-
+```sh
+$ open https://github.com/google/googletest
+```
 
 ## Tasks
 
-- [x] 1. Создать публичный репозиторий с названием **lab03** на сервисе **GitHub**
-- [x] 2. Ознакомиться со ссылками учебного материала
-- [x] 3. Выполнить инструкцию учебного материала
-- [x] 4. Составить отчет и отправить ссылку личным сообщением в **Slack**
+- [ ] 1. Создать публичный репозиторий с названием **lab05** на сервисе **GitHub**
+- [ ] 2. Выполнить инструкцию учебного материала
+- [ ] 3. Ознакомиться со ссылками учебного материала
+- [ ] 4. Составить отчет и отправить ссылку личным сообщением в **Slack**
 
+## Tutorial
+
+```sh
+$ export GITHUB_USERNAME=<имя_пользователя>
+$ alias gsed=sed # for *-nix system
+```
+
+```sh
+$ cd ${GITHUB_USERNAME}/workspace
+$ pushd .
+$ source scripts/activate
+```
+
+```sh
+$ git clone https://github.com/${GITHUB_USERNAME}/lab04 projects/lab05
+$ cd projects/lab05
+$ git remote remove origin
+$ git remote add origin https://github.com/${GITHUB_USERNAME}/lab05
+```
+
+```sh
+$ mkdir third-party
+$ git submodule add https://github.com/google/googletest third-party/gtest
+$ cd third-party/gtest && git checkout release-1.8.1 && cd ../..
+$ git add third-party/gtest
+$ git commit -m"added gtest framework"
+```
+
+```sh
+$ gsed -i '/option(BUILD_EXAMPLES "Build examples" OFF)/a\
+option(BUILD_TESTS "Build tests" OFF)
+' CMakeLists.txt
+$ cat >> CMakeLists.txt <<EOF
+
+if(BUILD_TESTS)
+  enable_testing()
+  add_subdirectory(third-party/gtest)
+  file(GLOB \${PROJECT_NAME}_TEST_SOURCES tests/*.cpp)
+  add_executable(check \${\${PROJECT_NAME}_TEST_SOURCES})
+  target_link_libraries(check \${PROJECT_NAME} gtest_main)
+  add_test(NAME check COMMAND check)
+endif()
+EOF
+```
+
+```sh
+$ mkdir tests
+$ cat > tests/test1.cpp <<EOF
+#include <print.hpp>
+
+#include <gtest/gtest.h>
+
+TEST(Print, InFileStream)
+{
+  std::string filepath = "file.txt";
+  std::string text = "hello";
+  std::ofstream out{filepath};
+
+  print(text, out);
+  out.close();
+
+  std::string result;
+  std::ifstream in{filepath};
+  in >> result;
+
+  EXPECT_EQ(result, text);
+}
+EOF
+```
+
+```sh
+$ cmake -H. -B_build -DBUILD_TESTS=ON
+$ cmake --build _build
+$ cmake --build _build --target test
+```
+
+```sh
+$ _build/check
+$ cmake --build _build --target test -- ARGS=--verbose
+```
+
+```sh
+$ gsed -i 's/lab04/lab05/g' README.md
+$ gsed -i 's/\(DCMAKE_INSTALL_PREFIX=_install\)/\1 -DBUILD_TESTS=ON/' .travis.yml
+$ gsed -i '/cmake --build _build --target install/a\
+- cmake --build _build --target test -- ARGS=--verbose
+' .travis.yml
+```
+
+```sh
+$ travis lint
+```
+
+```sh
+$ git add .travis.yml
+$ git add tests
+$ git add -p
+$ git commit -m"added tests"
+$ git push origin master
+```
+
+```sh
+$ travis login --auto
+$ travis enable
+```
+
+```sh
+$ mkdir artifacts
+$ sleep 20s && gnome-screenshot --file artifacts/screenshot.png
+# for macOS: $ screencapture -T 20 artifacts/screenshot.png
+# open https://github.com/${GITHUB_USERNAME}/lab05
+```
 
 ## Report
 
 ```sh
 $ popd
-$ export LAB_NUMBER=03
+$ export LAB_NUMBER=05
 $ git clone https://github.com/tp-labs/lab${LAB_NUMBER} tasks/lab${LAB_NUMBER}
 $ mkdir reports/lab${LAB_NUMBER}
 $ cp tasks/lab${LAB_NUMBER}/README.md reports/lab${LAB_NUMBER}/REPORT.md
@@ -29,109 +141,20 @@ $ gist REPORT.md
 
 ## Homework
 
-Представьте, что вы стажер в компании "Formatter Inc.".
-### Задание 1
-Вам поручили перейти на систему автоматизированной сборки **CMake**.
-Исходные файлы находятся в директории [formatter_lib](formatter_lib).
-В этой директории находятся файлы для статической библиотеки *formatter*.
-Создайте `CMakeList.txt` в директории [formatter_lib](formatter_lib),
-с помощью которого можно будет собирать статическую библиотеку *formatter*.
+### Задание
+1. Создайте `CMakeList.txt` для библиотеки *banking*.
+2. Создайте модульные тесты на классы `Transaction` и `Account`.
+    * Используйте mock-объекты.
+    * Покрытие кода должно составлять 100%.
+3. Настройте сборочную процедуру на **TravisCI**.
+4. Настройте [Coveralls.io](https://coveralls.io/).
 
-```sh
-1. Скчаиваем лаб-ую работу lab03 при помощи команды git clone https://github.com/tp-labs/lab03
-2. Создаем файл CMakeLists.txt ( CMakeLists.txt - это файл, в котором описана процедура сборки файлов)
+## Links
 
-cat > CMakeLists.txt <<EOF
-> cmake_minimum_required(VERSION 3.4) ---> минимально необходимая версия для работы файлов
-> add_library(formatter STATIC formatter.h formatter.cpp) ---> делаем статическую библиотеку из файлов
-> EOF
-
-3. Подключили к симэйку файлы
-cmake ~/navckin/workspace/tasks/lab03/lab03/formatter_lib
-4. Используем команду make ---> создаем биб-ку
-5. Появился файл formatter.a
+- [C++ CI: Travis, CMake, GTest, Coveralls & Appveyor](http://david-grs.github.io/cpp-clang-travis-cmake-gtest-coveralls-appveyor/)
+- [Boost.Tests](http://www.boost.org/doc/libs/1_63_0/libs/test/doc/html/)
+- [Catch](https://github.com/catchorg/Catch2)
 
 ```
-
-
-### Задание 2
-У компании "Formatter Inc." есть перспективная библиотека,
-которая является расширением предыдущей библиотеки. Т.к. вы уже овладели
-навыком созданием `CMakeList.txt` для статической библиотеки *formatter*, ваш 
-руководитель поручает заняться созданием `CMakeList.txt` для библиотеки 
-*formatter_ex*, которая в свою очередь использует библиотеку *formatter*.
-```sh
-1. Копируем содержимое папки formatter_lib в formatter_ex_lib.
-Используем команду:
-cp -r formatter_lib formatter_ex_lib/
-2.
-Заполняем биб-ку
-cat > CMakeLists.txt <<EOF
->cmake_minimum_required(VERSION 3.4)---> минимально необходимая версия для работы файлов
->project(formatter_ex)
->include_directories(formatter_lib) ---> пдключили дир-ию с заголовочными файлами
->add_subdirectory(formatter_lib) ---> подключили дир-рию с библиотекой, в которой уже есть СиМэйкЛистс.ткст, который и "собирает" ее.
->add_library(formatter_ex STATIC formatter_ex.h formatter_ex.cpp) ---> делаем статическую библиотеку из файлов
->target_link_libraries(formatter_ex formatter) ---> для компиляции форматтер_екс будем использовать биб-ку форматтер
-
-```
-
-### Задание 3
-Конечно же ваша компания предоставляет примеры использования своих библиотек.
-Чтобы продемонстрировать как работать с библиотекой *formatter_ex*,
-вам необходимо создать два `CMakeList.txt` для двух простых приложений:
-* *hello_world*, которое использует библиотеку *formatter_ex*;
-* *solver*, приложение которое испольует статические библиотеки *formatter_ex* и *solver_lib*.
-
-```sh
-ПЕРВОЕ:
-1. Необходимо переместить форматтер_екс в папку с хеллоу_ворлд.
-Используем команду:
-mv formatter_ex_lib/ hello_world_application/
-2. Создаем Симэйк со след. начинкой:
-cat > CMakeLists.txt <<EOF
->cmake_minimum_required(VERSION 3.4)
->project(hello_world)
->include_directories(formatter_ex_lib)
->add_subdirectory(formatter_ex_lib)
->add_executable(hello_world hello_world.cpp)
->target_link_libraries(hello_world formatter_ex)
->EOF
-3. Используем cmake 
-~/navckin/workspace/tasks/lab03/lab03/hello_world_application$ cmake ~/navckin/workspace/tasks/lab03/lab03/hello_world_application
--- Configuring done
--- Generating done
--- Build files have been written to: /home/anya/navckin/workspace/tasks/lab03/lab03/hello_world_application
-4. make
-5. После комнды make в дир-рии hello_world_application появился файл hello_world
-```
-
-```sh
-ВТОРОЕ:
-1. Необходимо создать Симэйки для солвер_либ и солвер_аппликатион
-2. Создание происходит аналогично пунктами выше, начинка для солвер_либ такая:
-cmake_minimum_required(VERSION 3.4) 
-add_library(solver_lib STATIC solver.h solver.cpp)
-
-Начинка для солвер_аппликатион такая:
-cmake_minimum_required(VERSION 3.4)
-project(solver)
-add_executable(solver equation.cpp)
-include_directories(formatter_ex_lib)
-add_subdirectory(formatter_ex_lib)
-include_directories(solver_lib)
-add_subdirectory(solver_lib)
-target_link_libraries(solver formatter_ex)
-target_link_libraries(solver solver_lib)
-
-3. Повторяем те же команды: сборка, запуск.
-4. Предварительно переместив при помощи команды mv солвер_либ,форматтер_ех_либ в солвер.аппплекатион
-5. При использовании команды make выяснилось, что в файле solver.cpp
-есть опечатки: исправлем. при помощи текстового редактора дописали нужную биб-ку (cmath) и исправили команду корня (sqrt)
-6. Появился файл solver
-```
-**Удачной стажировки!**
-
-```
-Copyright (c) 2015-2020 The ISC Authors & navckin
+Copyright (c) 2015-2021 The ISC Authors
 ```
