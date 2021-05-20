@@ -13,7 +13,6 @@ jobs:
 script:
     - cmake -H. -B_build
     - cmake --build _build
-    - name: "each CMakeLists.txt" 
     - cd _build && cpack -G "TGZ" && cd ..
     - cd _build && cpack -G "DEB" && cd ..
     
