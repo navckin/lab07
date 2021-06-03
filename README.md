@@ -9,10 +9,10 @@ $ open https://cmake.org/Wiki/CMake:CPackPackageGenerators
 
 ## Tasks
 
-- [ ] 1. Создать публичный репозиторий с названием **lab06** на сервисе **GitHub**
-- [ ] 2. Выполнить инструкцию учебного материала
-- [ ] 3. Ознакомиться со ссылками учебного материала
-- [ ] 4. Составить отчет и отправить ссылку личным сообщением в **Slack**
+- [x] 1. Создать публичный репозиторий с названием **lab06** на сервисе **GitHub**
+- [x] 2. Выполнить инструкцию учебного материала
+- [x] 3. Ознакомиться со ссылками учебного материала
+- [x] 4. Составить отчет и отправить ссылку личным сообщением в **Slack**
 
 ## Tutorial
 1 создаем переменную GITHUB_USERNAME со значением, указанным после равно 2 создаем переменную GITHUB_EMAIL со значением, указанным после равно 3 создаем псевдоним для vim - edit
@@ -22,20 +22,21 @@ $ export GITHUB_EMAIL=<адрес_почтового_ящика>
 $ alias edit=<nano|vi|vim|subl>
 $ alias gsed=sed # for *-nix system
 ```
-
+1 перемещаемся в д-ию workspace 2 сохр. указ. папку 3 активируем сорс
 ```sh
 $ cd ${GITHUB_USERNAME}/workspace
 $ pushd .
 $ source scripts/activate
 ```
-
+1 клонируем лаб 05 в 06 2 перемещаемся в д-юю лаб 06 
 ```sh
 $ git clone https://github.com/${GITHUB_USERNAME}/lab05 projects/lab06
 $ cd projects/lab06
 $ git remote remove origin
 $ git remote add origin https://github.com/${GITHUB_USERNAME}/lab06
 ```
-
+в указанный файл дописываем указ. строки
+git diff - просмотр отличий локальной версии от последнего коммита
 ```sh
 $ gsed -i '/project(print)/a\
 set(PRINT_VERSION_STRING "v\${PRINT_VERSION}")
@@ -58,7 +59,7 @@ set(PRINT_VERSION_MAJOR 0)
 ' CMakeLists.txt
 $ git diff
 ```
-
+созадем файл и редактируем его, заполянем данными
 ```sh
 $ touch DESCRIPTION && edit DESCRIPTION
 $ touch ChangeLog.md
@@ -68,13 +69,13 @@ $ cat > ChangeLog.md <<EOF
 - Initial RPM release
 EOF
 ```
-
+заполняем файл данными
 ```sh
 $ cat > CPackConfig.cmake <<EOF
 include(InstallRequiredSystemLibraries)
 EOF
 ```
-
+заполняем файл данными
 ```sh
 $ cat >> CPackConfig.cmake <<EOF
 set(CPACK_PACKAGE_CONTACT ${GITHUB_EMAIL})
@@ -87,7 +88,7 @@ set(CPACK_PACKAGE_DESCRIPTION_FILE \${CMAKE_CURRENT_SOURCE_DIR}/DESCRIPTION)
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "static C++ library for printing")
 EOF
 ```
-
+заполняем файл данными
 ```sh
 $ cat >> CPackConfig.cmake <<EOF
 
@@ -95,7 +96,7 @@ set(CPACK_RESOURCE_FILE_LICENSE \${CMAKE_CURRENT_SOURCE_DIR}/LICENSE)
 set(CPACK_RESOURCE_FILE_README \${CMAKE_CURRENT_SOURCE_DIR}/README.md)
 EOF
 ```
-
+заполняем файл данными
 ```sh
 $ cat >> CPackConfig.cmake <<EOF
 
@@ -106,7 +107,7 @@ set(CPACK_RPM_CHANGELOG_FILE \${CMAKE_CURRENT_SOURCE_DIR}/ChangeLog.md)
 set(CPACK_RPM_PACKAGE_RELEASE 1)
 EOF
 ```
-
+заполняем файл данными
 ```sh
 $ cat >> CPackConfig.cmake <<EOF
 
@@ -115,7 +116,7 @@ set(CPACK_DEBIAN_PACKAGE_PREDEPENDS "cmake >= 3.0")
 set(CPACK_DEBIAN_PACKAGE_RELEASE 1)
 EOF
 ```
-
+заполняем файл данными
 ```sh
 $ cat >> CPackConfig.cmake <<EOF
 
@@ -124,30 +125,30 @@ EOF
 ```
 
 
-а
+редактируем и заоплняем данными симэйк
 ```sh
 $ cat >> CMakeLists.txt <<EOF
 
 include(CPackConfig.cmake)
 EOF
 ```
-
+изменение README.md 
 ```sh
 $ gsed -i 's/lab05/lab06/g' README.md
 ```
-
+1 - фиксируем изменения 2 - оммитим 3 -
 ```sh
 $ git add .
 $ git commit -m"added cpack config"
 $ git tag v0.1.0.0
 $ git push origin master --tags
 ```
-
+авторизация в Travis CI 
 ```sh
 $ travis login --auto
 $ travis enable
 ```
-
+сборка и компиляция через CMake. Создание пакета через CPack
 ```sh
 $ cmake -H. -B_build
 $ cmake --build _build
@@ -155,20 +156,18 @@ $ cd _build
 $ cpack -G "TGZ"
 $ cd ..
 ```
-
+сборка и создание пакета через CMake
 ```sh
 $ cmake -H. -B_build -DCPACK_GENERATOR="TGZ"
 $ cmake --build _build --target package
 ```
-
+перемещение собранного пакета
 ```sh
 $ mkdir artifacts
 $ mv _build/*.tar.gz artifacts
 $ tree artifacts
 ```
 
-$ gist REPORT.md
-```
 
 ## Homework
 
