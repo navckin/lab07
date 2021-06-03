@@ -136,7 +136,7 @@ EOF
 ```sh
 $ gsed -i 's/lab05/lab06/g' README.md
 ```
-1 - фиксируем изменения 2 - оммитим 3 -
+1 - фиксируем изменения 2 - коммитим
 ```sh
 $ git add .
 $ git commit -m"added cpack config"
